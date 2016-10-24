@@ -1,0 +1,8 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.wix.internal.other</groupId>
+  <artifactId>other_internal_module_2.11</artifactId>
+  <version>3.100.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>A Synthetic Internal Library unrelated to Koboshi</name>
+</project>

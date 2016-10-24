@@ -1,0 +1,51 @@
+internalUrl = "https://github.com/ittaiz/Copybara-sync-example.git"
+ossUrl = "https://github.com/ittaiz/Koboshi.git"
+jiraCommitHookRegex = "[\$|#]SF[^\|]*\|[^\|]*\|"
+
+core.workflow(
+    name = "default",
+    origin = git.origin(
+        url = internalUrl,
+        ref = "master",
+    ),
+    destination = git.destination(
+        url = ossUrl,
+        fetch = "master",
+        push = "master",
+    ),
+    origin_files = glob(["koboshi-modules/hoopoe-koboshi-modules/**"], exclude = ["**/pom.xml"]),
+    
+    destination_files = glob(["**"], exclude = ["servlet-modules/**" , "*.*", "**/pom.xml"]),
+
+    mode = "ITERATIVE",
+    authoring = authoring.pass_thru("Wix OSS Sync <oss.sync@wix.com>"),
+    transformations = [
+        #move to root of OSS repo
+        core.move("koboshi-modules/hoopoe-koboshi-modules", ""),
+        metadata.scrubber(jiraCommitHookRegex, replacement=''),
+        metadata.restore_author(),
+    ],
+)
+core.workflow(
+    name = "import_pr",
+    origin = git.origin(
+        url = ossUrl,
+        ref = "master",
+    ),
+    destination = git.destination(
+        url = internalUrl,
+        fetch = "master",
+        push = "master",
+    ),
+    origin_files = glob(["**"], exclude = ["servlet-modules/**" , "*.*", "**/pom.xml"]),
+
+    destination_files = glob(["koboshi-modules/hoopoe-koboshi-modules/**"], exclude = ["**/pom.xml"]),
+    
+    mode = "CHANGE_REQUEST",
+    authoring = authoring.pass_thru("Wix OSS Sync <oss.sync@wix.com>"),
+    transformations = [
+        #move from root of OSS repo
+        core.move("", "koboshi-modules/hoopoe-koboshi-modules"),
+        metadata.save_author(),
+    ],
+)
