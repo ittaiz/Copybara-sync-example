@@ -17,7 +17,7 @@ core.workflow(
     
     destination_files = glob(["**"], exclude = ["servlet-modules/**" , "*.*", "**/pom.xml"]),
 
-    mode = "ITERATIVE",
+    mode = "CHANGE_REQUEST",
     authoring = authoring.pass_thru("Wix OSS Sync <oss.sync@wix.com>"),
     transformations = [
         #move to root of OSS repo
